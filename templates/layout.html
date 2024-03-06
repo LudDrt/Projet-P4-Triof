@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Triof</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="/static/css/main.css" />
+		<noscript><link rel="stylesheet" href="/static/css/noscript.css" /></noscript>
+        <script src="{{url_for('static', filename='js/process_predictions.js')}}"></script>
+        {% block style %}{% endblock %}
+    </head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+        <div id="wrapper">
+            <!-- Main -->
+            <section id="main">
+                <header>
+                    {% block header %}{% endblock %}
+                </header>
+                {% block content %}{% endblock %}
+            </section>
+            {% block footer %}{% endblock %}
+        </div>
+        {% block script %}{% endblock %}
+    </body>
+</html>

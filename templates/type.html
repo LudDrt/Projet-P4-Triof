@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block style %}
+<style>
+    #wrapper:before{
+        content: normal;
+    }
+</style>
+{% endblock %}
+
+{% block header %}
+<p>Please select the type of waste</p>
+{% endblock %}
+
+{% block content %}
+<form method="post" action="/confirmation">
+	<div class="fields">
+		<div class="field">
+			{% if predictions %}
+				{% for prediction in predictions %}
+					{% if prediction['selected'] %}
+						<input type="radio" name="type" id="{{prediction['tagName']}}" value="{{prediction['tagName']}}" checked />
+					{% else %}
+						<input type="radio" name="type" id="{{prediction['tagName']}}" value="{{prediction['tagName']}}" />
+					{% endif %}
+					<label for="{{prediction['tagName']}}">{{prediction['tagName']}} ({{prediction['probability']}} %)</label>
+				{% endfor %}
+			{% else %}
+				<input type="radio" name="type" id="bouteille" value="Bouteille plastique" />
+				<label for="bouteille">Bouteille plastique</label>
+				<input type="radio" name="type" id="gobelet" value="gobelet" />
+				<label for="gobelet">Gobelet en plastique</label>
+				<input type="radio" name="type" id="couvert" value="couvert" />
+				<label for="couvert">Couverts en plastique</label>
+			{% endif %}
+		</div>
+		<div class="field">
+			<input type="submit" value="confirm"/>
+		</div>
+	</div>
+</form>
+{% endblock %}
+
+{% block script %}
+<!-- Scripts -->
+<script>
+	if ('addEventListener' in window) {
+		window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
+		document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+	}
+</script>
+{% endblock %}

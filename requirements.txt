@@ -1,0 +1,5 @@
+flask
+matplotlib
+azure-cognitiveservices-vision-customvision
+azure-identity
+azure-keyvault-secrets
