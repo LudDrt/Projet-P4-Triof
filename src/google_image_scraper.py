@@ -27,7 +27,6 @@ def parse_arguments():
 
     return args.type, args.search, args.number, args.directory, args.keep
 
-
 def scrap_imgs(obj_type, search, number=10, directory='scraped_images', keep=TRUE):
 
     print("Connection et recherche google:\n...")
@@ -40,23 +39,33 @@ def scrap_imgs(obj_type, search, number=10, directory='scraped_images', keep=TRU
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    print(keep)
     if not os.path.exists(store_dir) :
-        print('test')
         os.makedirs(store_dir, exist_ok=TRUE)
         i_max=0
     else:
-        i_max = max(map(lambda name : int(name.split('_')[1].split('.')[0]),
-                    os.listdir('scraped_images/dirty')))
+        files = os.listdir(store_dir)
+        if len(files) == 0:
+            i_max = 0
+        else:
+            i_max = max(map(lambda name : int(name.split('_')[1].split('.')[0]),files))
 
-    url = f'https://www.google.com/search?q={search}&source=lnms&tbm=isch&sa=X&ved=2ahUKEwie44_AnqLpAhUhBWMBHUFGD90Q_AUoAXoECBUQAw&biw=1920&bih=947'
-
+    url = f'https://www.google.com/search?q={search}&source=lnms&tbm=isch'
     driver.get(url)
+
+    consent = driver.find_element(By.XPATH, "//button[@aria-label='Tout accepter']")
+    if consent:
+        #print("Il faut accepter les consentements Google")
+        consent.click()
+        time.sleep(1)
+    else:
+        #print("Pas de consentement à accepter")
+        pass
+
     #on scroll pour pouvoir scraper plus d'images
     print("Scrolling de la page de résultats de Google Image:")
     for _ in tqdm(range(10)):
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight-1000);")
-        time.sleep(0.5)
+        time.sleep(1)
 
     print("Récupération des images:")
     cpt=0
@@ -68,19 +77,17 @@ def scrap_imgs(obj_type, search, number=10, directory='scraped_images', keep=TRU
         if img_src is None:
             cpt+=1
             flag=True
-
         else:
             if img_src[:10] == 'data:image':
                 data = img_src.split(',')[1]
                 binary_data = a2b_base64(data)
                 with open(store_dir + filename, 'wb') as f:
                     f.write(binary_data)
-            
             elif img_src[:4] == 'http':
                 response = requests.get(img_src,stream=True)
                 with open(store_dir + filename, 'wb') as f:
                     shutil.copyfileobj(response.raw, f)
-    
+
     if flag:
         print(f"*** !! ATTENTION !! ***\n{cpt} image(s) n'a(ont) pas pu être scrappée(s)")
 

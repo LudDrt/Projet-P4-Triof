@@ -165,3 +165,8 @@ env.txt
 camera/prediction
 static/images/prediction
 .azure
+model_dirtyclean/images
+model_dirtyclean/saved_model
+scraped_images/
+Projet P4 - Triof.zip
+static/model/
